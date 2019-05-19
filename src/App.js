@@ -10,8 +10,6 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const promise = axios.get("https://api.coinpaprika.com/v1/coins");
-    console.log(promise);
     const { data: posts } = await axios.get(apiEndpoint);
     this.setState({ posts });
   }
@@ -25,8 +23,24 @@ class App extends Component {
     console.log(post);
   };
 
-  handleUpdate = post => {
-    console.log("Update", post);
+  handleUpdate = async post => {
+    const uri = "https://jsonplaceholder.typicode.com/posts";
+    post.title = "UPDATED";
+
+    // Update Entire Object
+    const { data } = await axios.put(uri + "/" + post.id, post);
+
+    console.log(data);
+
+    const posts = [...this.state.posts];
+    const indexOfUpdatedPost = posts.indexOf(post);
+    posts[indexOfUpdatedPost] = { ...post };
+    this.setState({ posts });
+
+    // // Update Properties of Object
+    // axios.patch(uri + "/" + post.id, { title: "UPDATED AGAIN" });
+
+    // console.log("Update", post);
   };
 
   handleDelete = post => {
