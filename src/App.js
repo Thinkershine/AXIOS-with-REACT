@@ -21,7 +21,7 @@ class App extends Component {
     const { data: post } = await axios.post(apiEndpoint, obj);
     const posts = [post, ...this.state.posts];
     console.log(posts);
-    this.setState(posts);
+    this.setState({ posts });
     console.log(post);
   };
 
