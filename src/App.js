@@ -43,7 +43,13 @@ class App extends Component {
     // console.log("Update", post);
   };
 
-  handleDelete = post => {
+  handleDelete = async post => {
+    const uri = "https://jsonplaceholder.typicode.com/posts";
+    await axios.delete(uri + "/" + post.id);
+
+    const posts = this.state.posts.filter(p => p.id !== post.id);
+    this.setState({ posts });
+
     console.log("Delete", post);
   };
 
