@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 axios.interceptors.response.use(null, error => {
   const expectedError =
@@ -8,7 +9,10 @@ axios.interceptors.response.use(null, error => {
 
   if (!expectedError) {
     console.log("Logging the error", error);
-    alert("Unexpected Error Occured!");
+    // Call As Function
+    toast("Unexpected Error Occured!");
+    // Call As Object Method
+    toast.error("Unexpected Error Occured");
   }
 
   // Return Flow to Calling Method
