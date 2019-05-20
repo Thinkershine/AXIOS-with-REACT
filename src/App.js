@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import http from "./services/httpService";
+import config from "./config.json";
 import "./App.css";
-
-const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
   state = {
@@ -10,13 +9,13 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const { data: posts } = await http.get(apiEndpoint);
+    const { data: posts } = await http.get(config.apiEndPoint);
     this.setState({ posts });
   }
 
   handleAdd = async () => {
     const obj = { title: "a", body: "b" };
-    const { data: post } = await http.post(apiEndpoint, obj);
+    const { data: post } = await http.post(config.apiEndPoint, obj);
     const posts = [post, ...this.state.posts];
     console.log(posts);
     this.setState({ posts });
@@ -24,11 +23,10 @@ class App extends Component {
   };
 
   handleUpdate = async post => {
-    const uri = "https://jsonplaceholder.typicode.com/posts";
     post.title = "UPDATED";
 
     // Update Entire Object
-    const { data } = await http.put(uri + "/" + post.id, post);
+    const { data } = await http.put(config.apiEndPoint + "/" + post.id, post);
 
     console.log(data);
 
@@ -44,15 +42,13 @@ class App extends Component {
   };
 
   handleDelete = async post => {
-    const uri = "https://jsonplaceholder.typicode.com/posts";
-
     const cachedOriginalPosts = this.state.posts;
 
     const posts = this.state.posts.filter(p => p.id !== post.id);
     this.setState({ posts });
 
     try {
-      await http.delete(uri + "/" + post.id);
+      await http.delete(config.apiEndPoint + "/" + post.id);
       throw new console.error("ERROR HAPPENED!");
     } catch (ex) {
       console.log("REQ : " + ex.request);
