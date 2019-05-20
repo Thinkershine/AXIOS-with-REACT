@@ -2,6 +2,21 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 
+axios.interceptors.response.use(null, error => {
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
+
+  if (!expectedError) {
+    console.log("Logging the error", error);
+    alert("Unexpected Error Occured!");
+  }
+
+  // Return Flow to Calling Method
+  return Promise.reject(error);
+});
+
 const apiEndpoint = "https://jsonplaceholder.typicode.com/posts";
 
 class App extends Component {
@@ -52,17 +67,13 @@ class App extends Component {
     this.setState({ posts });
 
     try {
-      await axios.delete("S" + uri + "/" + post.id);
+      await axios.delete(uri + "/" + post.id);
       throw new console.error("ERROR HAPPENED!");
     } catch (ex) {
       console.log("REQ : " + ex.request);
 
       if (ex.response && ex.response.status === 404) {
         alert("Resource Not Found");
-      } else {
-        alert("Something Went Wrong, UNEXPECTEDLY " + ex);
-        console.log(ex);
-        console.log("RES : " + ex.response);
       }
 
       this.setState({ posts: cachedOriginalPosts });
