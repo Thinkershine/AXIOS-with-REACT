@@ -45,10 +45,28 @@ class App extends Component {
 
   handleDelete = async post => {
     const uri = "https://jsonplaceholder.typicode.com/posts";
-    await axios.delete(uri + "/" + post.id);
+
+    const cachedOriginalPosts = this.state.posts;
 
     const posts = this.state.posts.filter(p => p.id !== post.id);
     this.setState({ posts });
+
+    try {
+      await axios.delete("S" + uri + "/" + post.id);
+      throw new console.error("ERROR HAPPENED!");
+    } catch (ex) {
+      console.log("REQ : " + ex.request);
+
+      if (ex.response && ex.response.status === 404) {
+        alert("Resource Not Found");
+      } else {
+        alert("Something Went Wrong, UNEXPECTEDLY " + ex);
+        console.log(ex);
+        console.log("RES : " + ex.response);
+      }
+
+      this.setState({ posts: cachedOriginalPosts });
+    }
 
     console.log("Delete", post);
   };
